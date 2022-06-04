@@ -2,18 +2,9 @@ import React , { useEffect , useState } from 'react'
 import styles from '../styles/Blog.module.css'
 import Link from 'next/link'
 
-const blog = () => {
-  const [blogs, setBlogs] = useState([])
-  useEffect(() => {
-    fetch("http://localhost:3000/api/blog").then((a)=>{
-      return a.json();
-    }).then((data)=>{
-      console.log(data);
-      setBlogs(data)
-    })
-
-  }, [])
-  
+const blog = (props) => {
+  const [blogs, setBlogs] = useState(props.allBlogs)
+    
   return (
     <div className={styles.container}>
       {blogs.map((blogItem)=>{ 
@@ -25,6 +16,15 @@ const blog = () => {
       
     </div>
   )
+}
+export async function getServerSideProps(context) {
+  let myData = await fetch("http://localhost:3000/api/blog")
+  let allBlogs = await myData.json();
+    
+  return {
+    
+    props: {allBlogs}, // will be passed to the page component as props
+  }
 }
 
 export default blog
